@@ -81,12 +81,12 @@ let updateDisplay = (num) => {
     : (DISPLAY_VALUE.textContent = parseFloat(newValue).toFixed(1));
 };
 
-DIGITS.map((button) =>
+DIGITS.forEach((button) =>
   button.addEventListener('click', () => pressDigit(button))
 );
 
 //Bind click event to operators.
-OPERATORS.map((button) =>
+OPERATORS.forEach((button) =>
   button.addEventListener('click', () => pressOperator(button))
 );
 
@@ -98,7 +98,7 @@ CLEAR.addEventListener('click', () => pressClear());
 
 //Keybinding for numbers
 document.addEventListener('keydown', (e) => {
-  DIGITS.map((button) => {
+  DIGITS.forEach((button) => {
     if (e.key == button.id) {
       pressDigit(button);
     }
