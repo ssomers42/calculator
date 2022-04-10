@@ -39,6 +39,41 @@ let operate = (signInput, input1, input2) => {
   operator = '';
 };
 
+let pressDigit = (button) => {
+  updateDisplay(button.textContent);
+  storeValue = DISPLAY_VALUE.textContent;
+};
+
+let pressOperator = (button) => {
+  if (num1 == undefined) {
+    operator = button.id;
+    num1 = parseInt(storeValue);
+    storeValue = '';
+  } else if (storeValue != '') {
+    num2 = parseInt(storeValue);
+    storeValue = '';
+    operate(operator, num1, num2);
+    operator = button.id;
+  } else {
+    operator = button.id;
+  }
+};
+
+let pressEquals = () => {
+  num2 = parseInt(DISPLAY_VALUE.textContent);
+  if (operator != '') {
+    storeValue = '';
+    operate(operator, num1, num2);
+  }
+};
+
+let pressClear = () => {
+  DISPLAY_VALUE.textContent = '';
+  storeValue = '';
+  num1 = undefined;
+  num2 = undefined;
+};
+
 let updateDisplay = (num) => {
   let newValue = storeValue + num;
   newValue % 1 == 0
@@ -46,41 +81,56 @@ let updateDisplay = (num) => {
     : (DISPLAY_VALUE.textContent = parseFloat(newValue).toFixed(1));
 };
 
-DIGITS.map((button) => {
-  button.addEventListener('click', () => {
-    updateDisplay(button.textContent);
-    storeValue = DISPLAY_VALUE.textContent;
-  });
-});
+DIGITS.map((button) =>
+  button.addEventListener('click', () => pressDigit(button))
+);
 
-OPERATORS.map((button) => {
-  button.addEventListener('click', () => {
-    if (num1 == undefined) {
-      operator = button.id;
-      num1 = parseInt(storeValue);
-      storeValue = '';
-    } else if (storeValue != '') {
-      num2 = parseInt(storeValue);
-      storeValue = '';
-      operate(operator, num1, num2);
-      operator = button.id;
-    } else {
-      operator = button.id;
+//Bind click event to operators.
+OPERATORS.map((button) =>
+  button.addEventListener('click', () => pressOperator(button))
+);
+
+//Calculate expression
+EQUALS.addEventListener('click', () => pressEquals());
+
+//Restart calculator
+CLEAR.addEventListener('click', () => pressClear());
+
+//Keybinding for numbers
+document.addEventListener('keydown', (e) => {
+  DIGITS.map((button) => {
+    if (e.key == button.id) {
+      pressDigit(button);
     }
   });
 });
 
-EQUALS.addEventListener('click', () => {
-  num2 = parseInt(DISPLAY_VALUE.textContent);
-  if (operator != '') {
-    storeValue = '';
-    operate(operator, num1, num2);
+//Keybinding for operators
+document.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case '+':
+      pressOperator(document.querySelector('#plus'));
+      break;
+    case '-':
+      pressOperator(document.querySelector('#minus'));
+      break;
+    case '*':
+      pressOperator(document.querySelector('#multiply'));
+      break;
+    case '/':
+      pressOperator(document.querySelector('#divide'));
+      break;
+    case '.':
+      pressDigit(document.querySelector('#dot'));
+      break;
+    case '=':
+      pressEquals();
+      break;
+    case 'Enter':
+      pressEquals();
+      break;
+    case 'Escape':
+      pressClear();
+      break;
   }
-});
-
-CLEAR.addEventListener('click', () => {
-  DISPLAY_VALUE.textContent = '';
-  storeValue = '';
-  num1 = undefined;
-  num2 = undefined;
 });
